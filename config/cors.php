@@ -15,20 +15,22 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'],
-
-    'allowed_origins' => ['*'],
-
-    'allowed_origins_patterns' => [],
-
-    'allowed_headers' => ['*'],
-
-    'exposed_headers' => [],
-
-    'max_age' => 0,
-
-    'supports_credentials' => false,
+        'paths' => ['api/*'], // Apply CORS to all API routes
+    
+        'allowed_methods' => ['*'], // Allow all HTTP methods
+    
+        'allowed_origins' => ['http://localhost:3000'], // Allow requests from your Next.js frontend
+    
+        'allowed_origins_patterns' => [], // Use patterns if needed
+    
+        'allowed_headers' => ['*'], // Allow all headers
+    
+        'exposed_headers' => [], // Expose headers if needed
+    
+        'max_age' => 0, // Preflight request cache duration
+    
+        'supports_credentials' => false, // Set to true if using cookies or sessions
+    
 
 ];
