@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\HelperMethods;
 use App\Http\Requests\TilesRequest;
 use App\Http\Resources\TilesResource;
 use App\Models\Tiles;
@@ -20,14 +21,14 @@ class TilesController extends Controller
     public function index()
     {
         try {
-            // Your logic to fetch data, e.g., retrieving projects or tasks
-            $data = Tiles::all();  // Example, adjust as per your needs
+            // Fetch all tiles with their related categories
+            $tiles = Tiles::with('categories')->get();
 
             // Return a successful response
-            return $this->responseSuccess($data);
+            return $this->responseSuccess($tiles);
         } catch (\Exception $e) {
-            // Log the error if needed
-            \Log::error('Error fetching data: ' . $e->getMessage());
+            // Log the error
+            \Log::error('Error fetching tiles: ' . $e->getMessage());
 
             // Return an error response
             return $this->responseError('Something went wrong, please try again later.');
@@ -46,18 +47,30 @@ class TilesController extends Controller
 
     public function store(Request $request)
     {
-        try {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'grid_category' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'category_id' => 'required|array', // Validate category_id is an array
 
+        ]);
+
+        try {
             // Handle image upload using the helper function
-            $imagePath = $this->uploadImage($request->file('image'));
+            $imagePath = HelperMethods::uploadImage($request->file('image'));
 
             // Create a new tile instance
             $tile = new Tiles();
-            $tile->name = $request->name;
-            $tile->price = $request->price;
-            $tile->description = $request->description;
+            $tile->name = $validated['name'];
+            $tile->grid_category = $validated['grid_category'];
+            $tile->description = $validated['description'];
             $tile->image = $imagePath;  // Save the image path in DB
             $tile->save();
+
+            // Sync categories to the tile (add or remove as necessary)
+            $tile->categories()->sync($validated['category_id']);  // Sync categories with the given array
 
             // Return success response using TilesResource
             return $this->responseSuccess(new TilesResource($tile), 'Tile created successfully', 201);
@@ -72,6 +85,7 @@ class TilesController extends Controller
             return $this->responseError('Something went wrong', $e->getMessage(), 500);
         }
     }
+
 
 
 
@@ -103,19 +117,30 @@ class TilesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'grid_category' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image is optional during update
+            'category_id' => 'required|array', // Validate category_id is an array
+        ]);
+
         try {
             // Find the existing tile by ID
             $tile = Tiles::findOrFail($id);
 
-            // Use the new method to handle the image update
-            $imagePath = $this->updateImage($request, $tile);
+            // Update the image if a new one is uploaded
+            $tile->image = HelperMethods::updateImage($request, $tile);  // Use the existing updateImage method
 
-            // Update tile data
-            $tile->name = $request->name;
-            $tile->price = $request->price;
-            $tile->description = $request->description;
-            $tile->image = $imagePath;  // Update the image path
+            // Update the tile's fields
+            $tile->name = $validated['name'];
+            $tile->grid_category = $validated['grid_category'];
+            $tile->description = $validated['description'];
             $tile->save();
+
+            // Sync categories to the tile (add or remove as necessary)
+            $tile->categories()->sync($validated['category_id']);  // Sync categories with the given array
 
             // Return success response using TilesResource
             return $this->responseSuccess(new TilesResource($tile), 'Tile updated successfully', 200);
@@ -132,6 +157,8 @@ class TilesController extends Controller
     }
 
 
+
+
     /**
      * Remove the specified resource from storage.
      */
@@ -140,52 +167,9 @@ class TilesController extends Controller
         //
     }
 
-    protected function uploadImage($image)
-    {
-        try {
-            // Check if the image is valid
-            if ($image && $image->isValid()) {
-                // Define the destination path (public/tiles folder)
-                $destinationPath = public_path('uploads');
 
-                // Generate a unique filename for the image (optional)
-                $imageName = time() . '_' . $image->getClientOriginalName();
-
-                // Move the image to the tiles folder
-                $image->move($destinationPath, $imageName);
-
-                // Return the relative path to the image
-                return 'uploads/' . $imageName;
-            }
-
-            // Return null if no image is uploaded or it is invalid
-            return null;
-        } catch (\Exception $e) {
-            // Log the error if something goes wrong
-            Log::error('Image upload failed: ' . $e->getMessage(), [
-                'error' => $e->getTraceAsString(),
-            ]);
-
-            // Return null in case of an error
-            return null;
-        }
-    }
-
-    protected function updateImage(Request $request, $tile)
-    {
-        // Check if a new image is uploaded and delete the previous image if it exists
-        if ($request->hasFile('image')) {
-            // Delete the previous image if it exists
-            if ($tile->image && file_exists(public_path($tile->image))) {
-                unlink(public_path($tile->image)); // Delete the old image
-            }
-
-            // Handle image upload using the helper function
-            return $this->uploadImage($request->file('image'));
-        }
-
-        // If no new image is uploaded, keep the old image
-        return $tile->image;
-    }
+   
 
 }
+
+//app/Helpers/HelperMethods.php

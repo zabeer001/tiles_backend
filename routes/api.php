@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\ProfileController;
 use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ColorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TilesController;
 
@@ -37,3 +39,5 @@ Route::prefix('auth')->middleware('api')->group(function () {
 
 
 Route::apiResource('tiles', TilesController::class);
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('colors', ColorController::class);

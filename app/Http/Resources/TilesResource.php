@@ -14,14 +14,20 @@ class TilesResource extends JsonResource
      */
     public function toArray($request)
     {
+        
         return [
-            'id' => $this->id,
             'name' => $this->name,
-            'price' => $this->price,
             'description' => $this->description,
+            'grid_category' => $this->grid_category,
             'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'categories' => $this->categories->map(function ($category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name, // Assuming the category has a 'name' field
+                ];
+            }),
         ];
     }
 }
