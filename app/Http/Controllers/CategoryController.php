@@ -15,8 +15,11 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categories = Category::all();
-            return $this->responseSuccess(CategoryResource::collection($categories));
+            $categories = Category::all()->map(function ($category) {
+                return array_merge($category->toArray(), ['count' => 0]);
+            });
+    
+            return $this->responseSuccess($categories);
         } catch (\Exception $e) {
             Log::error('Error fetching categories: ' . $e->getMessage());
             return $this->responseError('Something went wrong, please try again later.');
