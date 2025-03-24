@@ -53,7 +53,7 @@ class ColorController extends Controller
             // Create a new color instance
             $color = new Color();
             $color->name = $validated['name'];
-            $color->code = $validated['code'];
+            $color->code = $request->code;
             $color->image = $imagePath;
 
             $color->save();
