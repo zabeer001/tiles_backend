@@ -12,4 +12,9 @@ class Category extends Model
         'name',
         'description',
     ];
+
+    public function tiles()
+    {
+        return $this->belongsToMany(Tiles::class, 'category_tile');
+    }
 }
