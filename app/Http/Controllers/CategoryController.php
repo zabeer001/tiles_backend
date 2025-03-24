@@ -6,6 +6,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -15,13 +16,32 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $categories = Category::withCount('tiles')->get();
+            // Fetch paginated categories
+            $categories = DB::table('categories')
+                ->paginate(10);
+    
+            // Use map to append the 'tile_count' based on the category_id
+            $categories->getCollection()->transform(function ($category) {
+                // Count how many entries exist in category_tile where category_id = $category->id
+                $tileCount = DB::table('category_tile')
+                    ->where('category_id', $category->id)
+                    ->count();
+    
+                // Add the 'tile_count' to each category
+                $category->count = $tileCount;
+    
+                return $category;
+            });
+    
             return $this->responseSuccess(CategoryResource::collection($categories));
         } catch (\Exception $e) {
             Log::error('Error fetching categories: ' . $e->getMessage());
             return $this->responseError('Something went wrong, please try again later.');
         }
     }
+    
+
+    
 
     /**
      * Store a newly created resource in storage.
