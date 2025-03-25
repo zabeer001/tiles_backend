@@ -22,7 +22,7 @@ class TilesController extends Controller
     {
         try {
             // Fetch all tiles with their related categories
-            $tiles = Tiles::with('categories')->get();
+            $tiles = Tiles::with('categories')->paginate(10);
 
             // Return a successful response
             return $this->responseSuccess($tiles);

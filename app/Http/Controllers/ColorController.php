@@ -17,7 +17,7 @@ class ColorController extends Controller
     {
         // return 'zabeer';
         try {
-            $colors = Color::all();
+            $colors = Color::paginate(10);
             return $this->responseSuccess(ColorResource::collection($colors));
         } catch (\Exception $e) {
             Log::error('Error fetching categories: ' . $e->getMessage());
