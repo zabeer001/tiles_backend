@@ -28,7 +28,7 @@ class LoginController extends Controller
 
             // (optional) Attach the role to the token.
             $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
-            $name = $request->name;
+            $name = $user->name;
             $email = $request->email;
           
 
