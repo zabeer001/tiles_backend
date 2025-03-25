@@ -62,7 +62,7 @@ class ColorController extends Controller
         
 
             // Return success response using colorsResource
-            return $this->responseSuccess(new ColorResource($color), 'color created successfully', 201);
+            return $this->responseSuccess($color, 'color created successfully', 201);
         } catch (\Exception $e) {
             // Log the error with additional context
             Log::error('Error creating color: ' . $e->getMessage(), [
