@@ -15,22 +15,21 @@ return [
     |
     */
 
-
-        'paths' => ['api/*'], // Apply CORS to all API routes
+    'paths' => ['api/*'], // Apply CORS to all API routes
     
-        'allowed_methods' => ['*'], // Allow all HTTP methods
+    'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, etc.)
     
-        'allowed_origins' => ['http://localhost:3000'], // Allow requests from your Next.js frontend
+    'allowed_origins' => ['http://localhost:3000'], // Only allow requests from Next.js dev server
     
-        'allowed_origins_patterns' => [], // Use patterns if needed
+    'allowed_origins_patterns' => [], // No regex patterns for origins
     
-        'allowed_headers' => ['*'], // Allow all headers
+    'allowed_headers' => ['*'], // Allow all headers in requests
     
-        'exposed_headers' => [], // Expose headers if needed
+    'exposed_headers' => [], // Don't expose any special headers
     
-        'max_age' => 0, // Preflight request cache duration
+    'max_age' => 0, // Don't cache preflight requests
     
-        'supports_credentials' => false, // Set to true if using cookies or sessions
+     'supports_credentials' => true,
     
 
 ];
