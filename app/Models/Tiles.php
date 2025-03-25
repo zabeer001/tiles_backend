@@ -18,7 +18,9 @@ class Tiles extends Model
     public function categories()
     {
         // Specify the relationship using belongsToMany
-        return $this->belongsToMany(Category::class, 'category_tile');
+        return $this->belongsToMany(Category::class, 'category_tile', 'tile_id', 'category_id')
+                    ->withTimestamps();  // Optionally include timestamps if needed
+      
     }
     
     
