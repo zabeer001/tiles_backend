@@ -35,43 +35,45 @@ class ColorController extends Controller
      */
     public function store(Request $request)
     {
-        // return 'zabeer';
         // Validate the incoming request
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:255', // Code is optional
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image is optional
-
-
         ]);
-       
 
         try {
-            // Handle image upload using the helper function
-            $imagePath = HelperMethods::uploadImage($request->file('image'));
+            // Handle image upload
+            $imagePath = $request->hasFile('image')
+                ? HelperMethods::uploadImage($request->file('image'))
+                : null;
 
             // Create a new color instance
             $color = new Color();
             $color->name = $validated['name'];
-            $color->code = $request->code;
+            $color->code = $request->code; // Using $request instead of $validated
             $color->image = $imagePath;
-
             $color->save();
 
-            // Sync categories to the color (add or remove as necessary)
-        
-
-            // Return success response using colorsResource
-            return $this->responseSuccess($color, 'color created successfully', 201);
+            // Return success response
+            return response()->json([
+                'success' => true,
+                'message' => 'Color created successfully',
+                'data' => $color,
+            ], 201);
         } catch (\Exception $e) {
-            // Log the error with additional context
+            // Log error for debugging
             Log::error('Error creating color: ' . $e->getMessage(), [
                 'request_data' => $request->all(),
                 'error' => $e->getTraceAsString(),
             ]);
 
             // Return error response
-            return $this->responseError('Something went wrong', $e->getMessage(), 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -86,7 +88,7 @@ class ColorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
- 
+
 
     /**
      * Update the specified resource in storage.
@@ -101,14 +103,14 @@ class ColorController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image is optional
         ]);
 
-       
+
 
         try {
             // Find the existing color by ID
             $color = Color::findOrFail($id);
 
             // Update the image if a new one is uploaded
- 
+
 
             // Update the color's fields
             $color->name = $validated['name'];
@@ -116,8 +118,8 @@ class ColorController extends Controller
             $color->image = HelperMethods::updateImage($request, $color);  // Use the existing updateImage method
             $color->save();
 
-         
-         
+
+
 
             // Return success response using colorsResource
             return $this->responseSuccess(new ColorResource($color), 'color updated successfully', 200);
