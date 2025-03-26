@@ -53,7 +53,7 @@ class TilesController extends Controller
             'name' => 'required|string|max:255',
             'grid_category' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'image' => 'required|image|mimes:svg+xml|max:2048', // Validate image
             'category_id' => 'required|array', // Validate category_id is an array
 
         ]);
@@ -74,7 +74,7 @@ class TilesController extends Controller
             $tile->categories()->sync($validated['category_id']);  // Sync categories with the given array
 
             // Return success response using TilesResource
-            return $this->responseSuccess(new TilesResource($tile), 'Tile created successfully', 201);
+            return $this->responseSuccess($tile, 'Tile created successfully', 201);
         } catch (\Exception $e) {
             // Log the error with additional context
             Log::error('Error creating tile: ' . $e->getMessage(), [

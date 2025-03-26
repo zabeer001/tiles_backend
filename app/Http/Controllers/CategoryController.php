@@ -50,7 +50,7 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::create($request->only(['name', 'description']));
-            return $this->responseSuccess(new CategoryResource($category), 'Category Created Successfully', 201);
+            return $this->responseSuccess($category, 'Tile created successfully', 201);
         } catch (\Exception $e) {
             Log::error('Error creating category: ' . $e->getMessage(), ['request_data' => $request->all()]);
             return $this->responseError('Something went wrong', $e->getMessage(), 500);
