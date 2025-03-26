@@ -53,7 +53,7 @@ class TilesController extends Controller
             'name' => 'required|string|max:255',
             'grid_category' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:svg+xml|max:2048', // Validate image
+            'image' => 'required|image|mimes:svg|max:2048', // Validate image
             'category_id' => 'required|array', // Validate category_id is an array
 
         ]);
