@@ -30,9 +30,10 @@ class LoginController extends Controller
             $token = JWTAuth::claims(['role' => $user->role])->fromUser($user);
             $name = $user->name;
             $email = $request->email;
+            $id = $user->id;
           
 
-            return response()->json(compact('token','name','email'));
+            return response()->json(compact('token','name','email','id'));
         } catch (JWTException $e) {
             return response()->json(['error' => 'Could not create token'], 500);
         }
