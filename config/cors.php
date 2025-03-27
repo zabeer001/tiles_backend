@@ -19,7 +19,7 @@ return [
     
     'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, etc.)
     
-    'allowed_origins' => ['http://localhost:3000'], // Only allow requests from Next.js dev server
+    'allowed_origins' => ['*'], // Only allow requests from Next.js dev server
     
     'allowed_origins_patterns' => [], // No regex patterns for origins
     
