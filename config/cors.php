@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*'], // Apply CORS to all API routes
+    'paths' => ['api/*', '/images/*'], // Apply CORS to all API routes
     
     'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, etc.)
     
@@ -29,7 +29,7 @@ return [
     
     'max_age' => 0, // Don't cache preflight requests
     
-     'supports_credentials' => true,
+    'supports_credentials' => false,
     
 
 ];
