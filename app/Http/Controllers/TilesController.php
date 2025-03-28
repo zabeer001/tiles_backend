@@ -23,7 +23,7 @@ class TilesController extends Controller
         try {
             // return 'zabeer';
             // Fetch all tiles with their related categories
-            $tiles = Tiles::with('categories')->paginate(10); 
+            $tiles = Tiles::with('categories')->paginate(10);
 
             // Return a successful response
             return $this->responseSuccess($tiles);
@@ -53,7 +53,7 @@ class TilesController extends Controller
             'name' => 'required|string|max:255',
             'grid_category' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:svg|max:2048', // Validate image
+            'image' => 'nullable|image|mimes:svg|max:5120',
             'category_id' => 'required|array', // Validate category_id is an array
 
         ]);
@@ -123,7 +123,7 @@ class TilesController extends Controller
             'name' => 'required|string|max:255',
             'grid_category' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Image is optional during update
+            'image' => 'nullable|image|mimes:svg|max:5120',
             'category_id' => 'required|array', // Validate category_id is an array
         ]);
 
@@ -169,7 +169,7 @@ class TilesController extends Controller
     }
 
 
-   
+
 
 }
 
