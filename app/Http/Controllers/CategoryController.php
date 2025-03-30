@@ -17,8 +17,7 @@ class CategoryController extends Controller
     {
         try {
             // Fetch paginated categories
-            $categories = DB::table('categories')
-                ->paginate(10);
+            $categories = Category::paginate(10);
     
             // Use map to append the 'tile_count' based on the category_id
             $categories->getCollection()->transform(function ($category) {
