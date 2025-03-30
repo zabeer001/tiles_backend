@@ -8,13 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'name',
-        'description',
-    ];
-
-    public function tiles()
-    {
-        return $this->belongsToMany(Tiles::class, 'category_tile');
-    }
+    protected $fillable = ['name', 'description'];
 }
