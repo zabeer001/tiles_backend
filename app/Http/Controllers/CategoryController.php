@@ -20,17 +20,7 @@ class CategoryController extends Controller
             $categories = Category::paginate(10);
     
             // Use map to append the 'tile_count' based on the category_id
-            $categories->getCollection()->transform(function ($category) {
-                // Count how many entries exist in category_tile where category_id = $category->id
-                $tileCount = DB::table('category_tile')
-                    ->where('category_id', $category->id)
-                    ->count();
-    
-                // Add the 'tile_count' to each category
-                $category->count = $tileCount;
-    
-                return $category;
-            });
+            
     
             return $this->responseSuccess(CategoryResource::collection($categories));
         } catch (\Exception $e) {
