@@ -15,18 +15,19 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Handle preflight OPTIONS request
+        // return $next($request);
+        $response = $next($request);
+
+        // Add CORS headers to all responses
+        $response->header('Access-Control-Allow-Origin', '*');
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        $response->header('Access-Control-Allow-Headers', '*');
+
+        // Handle preflight request
         if ($request->getMethod() === 'OPTIONS') {
-            $response = response('', 200); // Empty response with 200 OK
-            $response->header('Access-Control-Allow-Origin', '*');
-            $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            return $response;
+            return response('', 200); // Empty response with 200 OK
         }
 
-        // Handle regular requests
-        $response = $next($request);
-        $response->header('Access-Control-Allow-Origin', '*');
         return $response;
     }
 }
