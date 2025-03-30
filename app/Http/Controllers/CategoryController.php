@@ -12,7 +12,15 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return response()->json(Category::paginate(10));
+        $categories =Category::paginate(10);
+        return response()->json([
+            'data' => $categories, // Only category data
+            'current_page' => $categories->currentPage(),
+            'total_pages' => $categories->lastPage(), // Total pages
+            'per_page' => $categories->perPage(),
+            'total' => $categories->total(),
+        ]);
+        // return response()->json($categories);
     }
 
     /**

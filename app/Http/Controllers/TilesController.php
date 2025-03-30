@@ -26,7 +26,13 @@ class TilesController extends Controller
             $tiles = Tiles::with('categories')->paginate(10);
 
             // Return a successful response
-            return $this->responseSuccess($tiles);
+            return $this->responseSuccess([
+                'data' => $tiles, // Only tile data
+                'current_page' => $tiles->currentPage(),
+                'total_pages' => $tiles->lastPage(), // Total pages
+                'per_page' => $tiles->perPage(),
+                'total' => $tiles->total(),
+            ]);
         } catch (\Exception $e) {
             // Log the error
             \Log::error('Error fetching tiles: ' . $e->getMessage());
