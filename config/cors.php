@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'paths' => ['api/*', '/images/*'], // Apply CORS to all API routes
+    'paths' => ['*'], // Apply CORS to all API routes
     
     'allowed_methods' => ['*'], // Allow all HTTP methods (GET, POST, etc.)
     
