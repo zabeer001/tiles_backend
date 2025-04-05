@@ -54,15 +54,50 @@ class TilesController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the incoming request
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'grid_category' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:svg|max:5120',
-            'category_id' => 'required|array', // Validate category_id is an array
+        // Validate incoming data
+        // $validated = $request->validate([
+        //     'name' => 'required|string',
+        //     'grid_category' => 'required|string',
+        //     'description' => 'required|string',
+        //     'image' => 'nullable|image|max:2048', // Allow image files up to 2MB
+        //     'category_id' => 'nullable|array',
+        // ]);
 
-        ]);
+        // If validation passes, save the new tile
+        try {
+            $tile = new Tile();
+            $tile->name = $request->name;
+            $tile->grid_category = $request->grid_category;
+            $tile->description = $request->description;
+
+            if ($request->hasFile('image')) {
+                $tile->image = $request->file('image')->store('tiles');
+            }
+
+            // If categories are passed, associate them with the tile (many-to-many)
+            if ($request->category_id) {
+                $tile->categories()->sync($request->category_id);
+            }
+
+            $tile->save();
+
+            return response()->json(['message' => 'Tile created successfully!'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Something went wrong', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function storea(Request $request)
+    {
+        // Validate the incoming request
+        // $validated = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'grid_category' => 'required|string|max:255',
+        //     'description' => 'required|string',
+        //     'image' => 'nullable|image|mimes:svg|max:5120',
+        //     'category_id' => 'required|array', // Validate category_id is an array
+
+        // ]);
 
         try {
             // Handle image upload using the helper function
